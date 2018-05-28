@@ -1,0 +1,19 @@
+div {
+  border: 1px solid blue;
+  background-color: green;
+}
+
+.reclama {
+  background-color: yellow;
+}
+
+.header {
+  display: flex;
+  position: absolute;
+  weight: 100%;
+
+}
+
+h1, .button_enter {
+  display: flex;
+}
