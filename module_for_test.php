@@ -1,7 +1,10 @@
 <?php
 
 
+$logged_user = new User;
 
+echo $logged_user->login ."<br>" ;
+echo $logged_user->access;
 
 /**
  * 
@@ -12,8 +15,7 @@ class User
 	public $login = 'Guest';
 	public $access = 'read';
 
-	public function __construct(argument)
-	{
+	public function __construct(){
 
 	}
 
@@ -33,9 +35,8 @@ class User
 	}
 
 	//удалить пользователя
-	public function delete()
-	{
-		# code...
+	public function delete(){
+		
 	}
 }
 
@@ -45,9 +46,9 @@ class User
  */
 class news
 {
-	public $name, $date, $description, $full_text;
+	public $name, $date, $description, $full_text, $id;
 
-	function __construct(argument)
+	function __construct()
 	{
 		# code...
 	}
@@ -78,10 +79,14 @@ class news
 /**
  * 
  */
-class pages
+
+
+class page_element
 {
+
+
 	
-	function __construct(argument)
+	function __construct()
 	{
 		# code...
 	}

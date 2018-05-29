@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <head>
 
-  <title>OMG news</title>
+  <title>OUCH news</title>
   <meta charset="utf-8">
   
   <!-- подключени bootstrap-->
@@ -12,16 +12,21 @@
   <!-- подключение своих стилей css -->
   <link rel="stylesheet" href="/style.css">
 </head>
+
+
 <body>
   <!-- шапка сайта -->
   <div class="header">
-    <h1> OMG News </h1>
-    <div>
+    <!-- форма входа -->
+    <div class="login_form">
+
+  <!-- сюда имя юзера вместо гостя-->
+      <h4>Hello Guest!</h4>
     	<form name="sign_in" method="post">
     		<input 
     			type="text" 
     			name="login" 
-    			placeholder="eneter your login">
+    			placeholder="enter your login">
     		<input 
     			type="password" 
     			name="password" 
@@ -29,46 +34,81 @@
 		    <input 
 		    	type="submit"
 		    	name="submit"  
-		    	value="submit">
+		    	value="login">
 	    </form>
     </div>
+    <h1> OUCH News </h1>
   </div>
-  <!-- список новостей -->
+
+
+<!-- список новостей -->
   <div name="news_descriptions_list" class="col-md-6 news_descriptions_list">
     
+<!-- элемент списка новостей-->
     <div class="news_block">
+
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="1">
+        <input type="submit" name="submit" value="edit">
+      </form>
+      
       <a href="">
-        <h4 class="news_name">News name 1</h4>
+        <h4 name="news_id" class="news_name">News name 1</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 1</p>     
       </a>
-      <form class="edit_button">
-      	<input type="" name="">
-      	<input type="submit" name="edut" value="edit">
-      </form>
+   
     </div>
+
+<!-- элемент списка новостей-->
     <div class="news_block">
+
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="2">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
       <a href="">
-        <h4 class="news_name">News name 2</h4>
+        <h4 name="news_id" class="news_name">News name 2</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 2</p>     
       </a>
     </div>
+
+<!-- элемент списка новостей-->
     <div class="news_block">
+
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="3">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
       <a href="">
-        <h4 class="news_name">News name 3</h4>
+        <h4 name="news_id" class="news_name">News name 3</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 3</p>     
       </a>
     </div>
+
+<!-- элемент списка новостей-->
     <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
       <a href="">
-        <h4 class="news_name">News name 4</h4>
+        <h4 name="news_id" class="news_name">News name 4</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 4</p>     
       </a>
     </div>
-    
+
+
     <div class="num_page">
         <button>
             <a href=""> < </a>
