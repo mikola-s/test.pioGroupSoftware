@@ -19,12 +19,8 @@ h1, .button_enter {
 
 .news_descriptions_list {
 	margin-top: 100px;
+  padding-top: 5px;
 	background-color: yellow;
-}
-
-.news_descriptions_list + div {
-	margin-top: 5px;
-	background-color: lightgray;
 }
 
 .news_descriptions_list div {
@@ -32,6 +28,27 @@ h1, .button_enter {
 	background-color: lightgray;
 }
 
+//первый элемент списка новостей
+.news_descriptions_list div:first-child{
+  margin-top: 5px;
+}
+
+.num_page button {
+  display: inline-flex;
+  //align-items: center;
+
+}
 .num_page {
-	align-items: center;
+  //align-content: center;
+  text-align: center;
+  //align-items: center;
+}
+
+.news_block{
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.news_name, .news_date {
+  display: inline-block;
 }

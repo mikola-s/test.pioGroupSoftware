@@ -3,17 +3,18 @@
 
 
 
-
 /**
  * 
  */
 class User 
 {
-	public name, password, acess;
+	public $password;
+	public $login = 'Guest';
+	public $access = 'read';
 
 	public function __construct(argument)
 	{
-		# code...
+
 	}
 
 	//добавить пользователя 
@@ -31,7 +32,7 @@ class User
 
 	}
 
-	//удалить 
+	//удалить пользователя
 	public function delete()
 	{
 		# code...
@@ -42,9 +43,9 @@ class User
 /**
  * 
  */
-class News
+class news
 {
-	public date, time, content, full;
+	public $name, $date, $description, $full_text;
 
 	function __construct(argument)
 	{
