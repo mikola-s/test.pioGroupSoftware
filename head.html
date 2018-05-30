@@ -7,20 +7,22 @@
   <!-- подключени bootstrap-->
   <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="./bootstrap/css/bootstrap-theme.min.css">
-  <script src="./bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script src="./bootstrap/js/bootstrap.min.js"></script>
   
   <!-- подключение своих стилей css -->
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 
 <body>
-  <!-- шапка сайта -->
-  <div class="header">
-    <!-- форма входа -->
-    <div class="login_form">
+  <!-- шапка сайта style="position: fixed;-->
+  <div id="page_header">
+    <h1> OUCH News </h1>
+  </div>
 
-  <!-- сюда имя юзера вместо гостя-->
+   	<!-- форма входа -->
+    <div class="login_form">
+	  <!-- сюда имя юзера вместо гостя-->
       <h4>Hello Guest!</h4>
     	<form name="sign_in" method="post">
     		<input 
@@ -37,8 +39,6 @@
 		    	value="login">
 	    </form>
     </div>
-    <h1> OUCH News </h1>
-  </div>
 
 
 <!-- список новостей -->
@@ -52,8 +52,9 @@
         <input type="hidden" name="news_id" value="1">
         <input type="submit" name="submit" value="edit">
       </form>
-      
-      <a href="">
+
+<!-- подшаманить get запрос -->
+      <a href="head.html?news_id=1&submit=full_news">
         <h4 name="news_id" class="news_name">News name 1</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 1</p>     
@@ -70,7 +71,7 @@
         <input type="submit" name="submit" value="edit">
       </form>
 
-      <a href="">
+      <a href="head.html?news_id=2&submit=full_news">
         <h4 name="news_id" class="news_name">News name 2</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 2</p>     
@@ -86,7 +87,7 @@
         <input type="submit" name="submit" value="edit">
       </form>
 
-      <a href="">
+      <a href="head.html?news_id=3&submit=full_news">
         <h4 name="news_id" class="news_name">News name 3</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 3</p>     
@@ -101,7 +102,105 @@
         <input type="submit" name="submit" value="edit">
       </form>
 
-      <a href="">
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
+        <h4 name="news_id" class="news_name">News name 4</h4>
+        <p class="news_date">news date</p>
+        <p class="news_description">news description 4</p>     
+      </a>
+    </div>
+    <!-- элемент списка новостей-->
+    <div class="news_block">
+<!-- кнопка EDIT отсюда передавать ИД новости -->
+      <form class="edit_button">
+        <input type="hidden" name="news_id" value="4">
+        <input type="submit" name="submit" value="edit">
+      </form>
+
+      <a href="head.html?news_id=4&submit=full_news">
         <h4 name="news_id" class="news_name">News name 4</h4>
         <p class="news_date">news date</p>
         <p class="news_description">news description 4</p>     
