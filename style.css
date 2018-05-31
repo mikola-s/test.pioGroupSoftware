@@ -67,12 +67,16 @@ div {
   display: inline-block;
 }
 
-.news_date
-
+.news_date {
+	position: relative;
+	float: right;
+	top: 8px;
+	right: 10px;
+}
 
 .edit_button {
 	position: relative;
-	right: right;
+	float: right;
 	top: 5px;
 }
 
@@ -89,3 +93,6 @@ div {
   text-align: center;
 }
 
+.login_form #ahtung {
+	color: red;
+}
