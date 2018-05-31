@@ -35,23 +35,23 @@ div {
 }
 
 /*стили списка новостей*/
-.news_descriptions_list div {
+.short_news_list div {
 	margin-bottom: 5px;
 	background-color: lightgray;
 }
 
 /*первый элемент списка новостей*/
-.news_descriptions_list .news_block:first-child{
+.short_news_list .short_news_block:first-child{
   margin-top: 45px;
 }
 
-.news_descriptions_list {
+.short_news_list {
 	margin-top: 5px;
   padding-top: 5px;
 	background-color: yellow;
 }
 
-.news_block{
+.short_news_block{
   margin-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
@@ -59,12 +59,13 @@ div {
   border: 1px solid white;
 }
 
-.news_block:hover {
+.short_news_block:hover {
   border: 1pt solid blue;
 }
 
 .news_name, .news_date {
   display: inline-block;
+  #border: 1px solid blue;
 }
 
 .news_date {
@@ -74,14 +75,16 @@ div {
 	right: 10px;
 }
 
-.edit_button {
+.button_edit {
 	position: relative;
 	float: right;
 	top: 5px;
 }
 
-.news_block a p{
+
+.short_news_block a{
 	text-decoration: none;
+	display: block;
 }
 
 /*блок нумерации страниц*/

@@ -7,14 +7,16 @@ session_start();
 
 
 
-$logged_user = new user;
-$page_element = new page_elements;
+$user = new user_class;
+$html_part = new page_elements;
+$news = new news_class;
 
-$page_element->head(); //шапка стриницы
+$html_part->head(); //шапка стриницы
 
 		echo '<pre>';
 		echo '<br><br>post<br>';
 		print_r ($_POST);
+		print_r ($_GET);
 		echo '</pre>';
 //главная станица после авторизации
 
@@ -22,63 +24,64 @@ if (!empty($_POST) && (isset($_POST['submit']))) {
 		if ($_POST['submit'] == 'login') {
 			$login_from_post = htmlentities($_POST['login']);
 			$password_from_post = htmlentities($_POST['password']);
-			if ($logged_user->autorization($login_from_post, $password_from_post)) {
-				$page_element->user_login($login_from_post, TRUE);
+			if ($user->autorization($login_from_post, $password_from_post)) {
+				$html_part->form_login($login_from_post, TRUE);
 			} 	
 			else {
-				$page_element->user_login($login_from_post, FALSE);
+				$html_part->form_login($login_from_post, FALSE);
 			}
 		} elseif ($_POST['submit'] == 'exit') {
-			$logged_user->update_session();
-			$page_element->head();
-			$page_element->user_login($logged_user->login, FALSE);
+			$user->update_session();
+			$html_part->head();
+			$html_part->form_login($user->login, FALSE);
+		} elseif ($_POST['submit'] == 'edit') {
+			//код для правки новостей
 		}	
-		//$page_element->user_login($logged_user->login);
+		//$html_part->form_login($user->login);
 	} 
 
 elseif (empty($_POST)) {
-	$logged_user->update_session();
-	$page_element->head();
-	$page_element->user_login($logged_user->login, FALSE);
+	$user->update_session();
+	$html_part->head();
+	$html_part->form_login($user->login, FALSE);
 
-	}
+}
 
 //----------------------------------------
-		if (isset($_SESSION)) {
-			echo '<pre>';
-			echo '<br><br>sessipn<br>';
-			print_r ($_SESSION);
-			echo '</pre>';
-		}
+		// if (isset($_SESSION)) {
+		// 	echo '<pre>';
+		// 	echo '<br><br>sessipn<br>';
+		// 	print_r ($_SESSION);
+		// 	echo '</pre>';
+		// }
 //--------------------------------------
 
-// if (empty($_GET)) {
-	
- 	echo $page_element->news_list($logged_user->user_data());
-// } elseif (!empty($_GET) && ($_GET{
-// 	# code...
-// }
-
+if (empty($_GET)) {
+ 	echo $html_part->short_news_list($user->access, $news->short_news());
+} elseif (isset($_GET['submit']) && ($_GET['submit'] == 'full_news')) {
+	echo "full_news";
+}
 
 	
 
 
-	// echo $logged_user->login ."<br>" ;
-	// echo $logged_user->access;
-		// echo "login ".$logged_user->login ."<br>" ;
-		// echo "access ".$logged_user->access;
+	// echo $user->login ."<br>" ;
+	// echo $user->access;
+		// echo "login ".$user->login ."<br>" ;
+		// echo "access ".$user->access;
 
 
 /**
  * 
  */
-class user 
+class user_class 
 {
 	public $password;
 	public $login = 'Guest';
 	public $access = 'read';
 
 	//запрашивает из БД данные пользователя
+	//скорее всего не нужна
 	public function user_data()
 	{
 		$mysqli = $this->mysql_open();
@@ -89,9 +92,9 @@ class user
 		$mysqli->close();
 		return $user_data;
 		
-		echo "<br><pre>user_data ";
-			print_r($user_data);
-		echo "</pre>";
+		// echo "<br><pre>user_data ";
+		// 	print_r($user_data);
+		// echo "</pre>";
 	}
 
 	//
@@ -167,16 +170,23 @@ class user
 /**
  * 
  */
-class news
+class news_class
 {
 	public $name, $date, $description, $full_text, $id;
 
-	function __construct()
-	{
-		# code...
-	}
 
 	//
+	public function short_news()
+	{
+		$mysqli = $this->mysql_open();
+		$query = "SELECT id, header, description, date FROM news";
+		if ($mysqli_rezult = $mysqli->query($query)) {
+			$short_news_data = $mysqli_rezult->fetch_all(MYSQLI_ASSOC);
+		}
+		$mysqli->close();
+		return $short_news_data;
+
+	}
 	public function add()
 	{
 
@@ -246,12 +256,12 @@ class page_elements
 _HTML_head;
 	}
 
-	public function user_login($user_name, $autorization)
+	public function form_login($user_name, $autorization)
 	{
 		if ($user_name == 'Guest') 
 		{
 			
-			echo <<<_USER_LOGIN
+			echo <<<_FORM_LOGIN
 			<div class="login_form">
 				<h4>Hello $user_name!</h4>
 		    	<form name="sign_in" method="post">
@@ -269,12 +279,12 @@ _HTML_head;
 				    	value="login">
 			    </form>
 		    </div>
-_USER_LOGIN;
+_FORM_LOGIN;
 
 		} 
 		elseif ($autorization == TRUE)
 		{
-		echo <<<_USER_ENTERED
+		echo <<<_FORM_EXIT
 		<div class="login_form">
 			<h4>Hello $user_name!</h4>
 	    	<form name="sign_in" method="post">
@@ -284,11 +294,11 @@ _USER_LOGIN;
 			    	value="exit">
 		    </form>
 	    </div>
-_USER_ENTERED;
+_FORM_EXIT;
 		}
 	    elseif ($autorization === FALSE)
 		{
-		echo <<<_USER_ENTERED
+		echo <<<_FORM_LOGIN_FALSE
 		<div class="login_form">
 				<h4 id="ahtung">wrong login or password</h4>
 		    	<form name="sign_in" method="post">
@@ -306,28 +316,18 @@ _USER_ENTERED;
 				    	value="login">
 			    </form>
 		    </div>
-_USER_ENTERED;
-
+_FORM_LOGIN_FALSE;
 		}
 	}
 
 
-	//лента новостей
-	public function news_list($user_data)
+	//лента коротких новостей
+	public function short_news_list($user_access, $news_data)
 	{
-			echo '<pre> user data';
-				print_r($user_data);
-			echo '</pre>';
-		$mysqli = $this->mysql_open();
-		$query = "SELECT id, header, description, date FROM news";
-		if ($mysqli_rezult = $mysqli->query($query)) {
-			$news_data = $mysqli_rezult->fetch_all(MYSQLI_ASSOC);
-		}
-		$mysqli->close();
-		echo '<div name="news_descriptions_list" 
-			class="col-md-6 news_descriptions_list">';
+		echo '<div name="short_news_list" 
+			class="col-md-6 short_news_list">';
 		foreach ($news_data as $row_num => $row){
-			$this->list_block($user_data, $row);
+			$this->short_news($user_access, $row);
 		}
 		echo '</div>';
 
@@ -336,47 +336,50 @@ _USER_ENTERED;
 	}
 
 	//короткая новость
-	public function list_block($user_data, $news_data)
+	public function short_news($user_access, $news_data)
 	{
-		
-			echo '<pre> user data';
-				print_r($user_data);
-			echo '</pre>';
-		echo '<div class="news_block">';
-		if ($user_data['access'] == 'full') {
-			echo <<<_EDIT_BUTTON
-				    <form method="post" class="edit_button">
-	        			<input type="hidden" name="news_id" value="{$news_data['id']}">
-	        			<input type="submit" name="submit" value="edit">
-	      			</form>
-_EDIT_BUTTON;
-	      		
+######################		
+		// echo '<pre> user data';
+		// print_r($user_data);
+		// echo '</pre>';
+
+		echo '<div class="short_news_block">';
+		if ($user_access == 'full') {
+	      	$this->button_edit($news_data['id']);
 		}
 
 		$file = str_replace(__DIR__, '',__FILE__) ."?news_id=". $news_data['id'] .
 			"&submit=full_news";
-		echo <<<_LIST_BLOCK
+		echo <<<_SHORT_NEWS
 					<a href="$file">
 		        		<h4 name="news_header" class="news_name">{$news_data['header']}</h4>
 		        		<p class="news_date">{$news_data['date']}</p>
 		        		<p class="news_description">{$news_data['description']}</p>     
 		     		</a>
     			</div>
-_LIST_BLOCK;
+_SHORT_NEWS;
+	}
+	
+	//кнопка для редактирования новости
+	public function button_edit($news_id)
+	{
+			echo <<<_BUTTON_EDIT
+				    <form method="post" class="button_edit">
+	        			<input type="hidden" name="news_id" value="$news_id">
+	        			<input type="submit" name="submit" value="edit">
+	      			</form>
+_BUTTON_EDIT;
+	}
+
+	public function full_news()
+	{
 		
 	}
-	public function edit_button($news_id)
-	{
-	
-		echo <<<_EDIT_BUTTON
-	    	<form class="edit_button">
-		        <input type="hidden" name="news_id" value="$news_id">
-		        <input type="submit" name="submit" value="edit">
-	      	</form>
-_EDIT_BUTTON;
 
-	}
-	public function add_news_button($value='')
+
+
+
+	public function button_add_news($value='')
 	{
 		# code...
 	}
