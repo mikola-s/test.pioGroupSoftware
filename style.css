@@ -37,18 +37,15 @@ div {
 /*стили списка новостей*/
 .short_news_list div {
 	margin-bottom: 5px;
+	margin-left: auto;
+	margin-right: auto;
 	background-color: lightgray;
-}
-
-/*первый элемент списка новостей*/
-.short_news_list .short_news_block:first-child{
-  margin-top: 45px;
 }
 
 .short_news_list {
 	margin-top: 5px;
-  padding-top: 5px;
-	background-color: yellow;
+  padding-top: 45px;
+	background-color: gray;
 }
 
 .short_news_block{
@@ -65,7 +62,7 @@ div {
 
 .news_name, .news_date {
   display: inline-block;
-  #border: 1px solid blue;
+  /*border: 1px solid blue;*/
 }
 
 .news_date {
@@ -75,16 +72,16 @@ div {
 	right: 10px;
 }
 
-.button_edit {
+.button_news_edit {
 	position: relative;
 	float: right;
 	top: 5px;
 }
 
 
-.short_news_block a{
+.short_news_block {
 	text-decoration: none;
-	display: block;
+	cursor: pointer;
 }
 
 /*блок нумерации страниц*/
@@ -98,4 +95,25 @@ div {
 
 .login_form #ahtung {
 	color: red;
+}
+
+.short_news_form {
+	display: none;
+	border: 0 solid white;
+}
+
+.area_edit_news {
+	/*display: inline-block;*/
+	width: 100%;
+}
+
+.full_news_view {
+	font-family: sans-serif;
+}
+
+.button_add_news {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 10px;
 }
