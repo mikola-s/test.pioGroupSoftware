@@ -8,82 +8,75 @@ $news = new news_class;
 
 $html_part->head(); //шапка стриницы
 
-		echo '<pre>';
-		echo '<br><br>post<br>';
-		print_r ($_POST);
-		echo '</pre>';
+		// echo '<pre>';
+		// echo '<br><br>post<br>';
+		// print_r ($_POST);
+		// echo '</pre>';
+
 //главная станица после авторизации
-
 if (!empty($_POST) && (isset($_POST['form']))) {
+	$user->login = $_POST['login'];
+	$user->access = $_POST['access'];
+	$html_part->form_login($user->login, TRUE);
 
-		switch ($_POST['form']) {
-			case 'login':
-				$login_from_post = htmlentities($_POST['login']);
-				$password_from_post = htmlentities($_POST['password']);
-				if ($user->autorization($login_from_post, $password_from_post)) {
-					$html_part->form_login($login_from_post, TRUE);
-				} 	
-				else {
-					$html_part->form_login($login_from_post, FALSE);
-				}
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
-				break;
-			case 'exit':
-				$user->login = 'Guest';
-				$user->access = 'read';
+
+	switch ($_POST['form']) {
+		case 'login':
+			$login_from_post = htmlentities($_POST['login']);
+			$password_from_post = htmlentities($_POST['password']);
+			if ($user->autorization($login_from_post, $password_from_post)) {
+				$html_part->form_login($login_from_post, TRUE);
+			} 	
+			else {
+				$html_part->form_login($login_from_post, FALSE);
+			}
+ 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+			break;
+		case 'exit':
+			$user->login = 'Guest';
+			$user->access = 'read';
 //-------------------------------------
-				$user->update_session();
+			$user->update_session();
 //-------------------------------------
-				$html_part->form_login($user->login, TRUE);
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
-				break;
-			case 'full_news':
-				$user->login = $_POST['login'];
-				$user->access = $_POST['access'];
-
-				$html_part->form_login($user->login, TRUE);
-				$full_news_data = $news->full_news($_POST['news_id']);
-				$html_part->full_news($user->login, $user->access, $full_news_data);
-				break;
-			case 'edit':
-				$user->login = $_POST['login'];
-				$user->access = $_POST['access'];
-				$html_part->form_login($user->login, TRUE);
-				$full_news_data = $news->full_news($_POST['news_id']);
-				$html_part->full_news_edit($user->login, $user->access, $full_news_data);
-
-				break;
-			case 'save_news':
-				$user->login = $_POST['login'];
-				$user->access = $_POST['access'];
-				$news->save($_POST);
-				$html_part->form_login($user->login, TRUE);
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
-				break;
-			case 'value':
-				# code...
-				break;
-			case 'value':
-				# code...
-				break;
-			case 'value':
-				# code...
-				break;
-			case 'value':
-				# code...
-				break;
-			case 'value':
-				# code...
-				break;
-			case 'value':
-				# code...
-				break;
-			
-			default:
-				# code...
-				break;
-		}
-	} 
+			$html_part->form_login($user->login, TRUE);
+ 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+			break;
+		case 'full_news':
+			$full_news_data = $news->full_news($_POST['news_id']);
+			$html_part->full_news($user->login, $user->access, $full_news_data);
+			break;
+		case 'edit':
+			$full_news_data = $news->full_news($_POST['news_id']);
+			$html_part->full_news_edit($user->login, $user->access, $full_news_data);
+			break;
+		case 'save_news':
+			$news->save($_POST);
+ 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+			break;
+		case 'add_news':
+			$html_part->add($user->login, $user->access);
+			break;
+		case 'value':
+			# code...
+			break;
+		case 'value':
+			# code...
+			break;
+		case 'value':
+			# code...
+			break;
+		case 'value':
+			# code...
+			break;
+		case 'value':
+			# code...
+			break;
+		
+		default:
+			# code...
+			break;
+	}
+} 
 
 elseif (empty($_POST)) {
 	$user->login = 'Guest';
@@ -155,11 +148,7 @@ class user_class
 		}
 		
 	}
-######################
-// echo "<br><pre>user_data ";
-// print_r($user_data);
-// echo "</pre>";
-#####################
+
 //-------------------------------------
 	//обновление параметров сессии
 	public function update_session()
@@ -170,7 +159,7 @@ class user_class
 
 
 	//добавить пользователя 
-	public function add(){
+	public function add($user_login, $user_access){
 
 	}
 
@@ -243,26 +232,29 @@ class news_class
 	public function save($post_data)
 	{
 		$mysqli = $this->mysql_open();
-		$query = <<<_QUERY
-			UPDATE news SET 
-			header = "{$post_data['header']}",
-			description = "{$post_data['description']}",
-			full_news = "{$post_data['full_news']}",
-			date = "{$post_data['date']}" 
-			WHERE news.id="{$post_data['id']}"
-_QUERY;
+		
+		if ($post_data['id'] <> 0) {
+			$query = <<<_QUERY_UPDATE
+				UPDATE news SET 
+				header = "{$post_data['header']}",
+				description = "{$post_data['description']}",
+				full_news = "{$post_data['full_news']}",
+				date = "{$post_data['date']}" 
+				WHERE news.id="{$post_data['id']}"
+_QUERY_UPDATE;
+			} else {
+				$query = <<<_QUERY_ADD
+				INSERT INTO news (id, header, description, full_news, date) 
+				VALUES (NULL, "{$post_data['header']}", "{$post_data['description']}", 
+				"{$post_data['full_news']}", "{$post_data['date']}")
+_QUERY_ADD;
+			}
 		$mysqli_rezult = $mysqli->query($query);
 		if (!$mysqli_rezult) {
    			exit($mysqli->error);
 		}
 		$mysqli->close();
 	}
-
-	public function save_news($value='')
-	{
-		# code...
-	}
-	
 
 	//открывает базу данных и проверяет открытие
 	public function mysql_open()
@@ -365,6 +357,11 @@ _FORM_EXIT;
 				    	type="submit"
 				    	name="form"  
 				    	value="login">
+		    		<input 
+						type="hidden" 
+						form="form_{$news_data['id']}" 
+						name="access" 
+						value="$user_access">
 			    </form>
 		    </div>
 _FORM_LOGIN_FALSE;
@@ -473,7 +470,7 @@ _BUTTON_EDIT;
     		<p class="news_date">{$full_news_data['date']}</p>
     		<p class="news_description">{$full_news_data['description']}</p>
 		    <hr>
-		    <div class="full_text_news">{$full_news_data['full_news']}</div>
+		    <p class="text_news">{$full_news_data['full_news']}</p>
    		</div>
 _FULL_NEWS;
 	}
@@ -481,21 +478,40 @@ _FULL_NEWS;
 #-------------------------------------------------------
 	public function full_news_edit($user_login, $user_access, $full_news_data)
 	{
-		
 		echo <<<_FULL_NEWS_EDIT
 		    <form class="col-md-7 full_news_edit" method="post">
-
 		    	<p>news date</p>
-		    		<input type="date" class="area_edit_news col-md-3" value="{$full_news_data['date']}" name="date" rows="1">
+	    		<input 
+	    			type="date" 
+	    			class="area_edit_news col-md-3" 
+	    			value="{$full_news_data['date']}" 
+	    			name="date" 
+	    			rows="1" 
+	    			required>
 		    	<br>
 		    	<p>news header</p>
-		    	<textarea class="area_edit_news col-md-7" name="header" rows="1">{$full_news_data['header']}</textarea>
+		    	<textarea 
+		    		class="area_edit_news col-md-7" 
+		    		name="header" 
+		    		rows="1" 
+		    		required
+		    		>{$full_news_data['header']}</textarea>
 		    	<br>
 		    	<p>news description</p>
-		    	<textarea class="area_edit_news col-md-7" name="description" rows="2">{$full_news_data['description']}</textarea>
+		    	<textarea 
+		    		class="area_edit_news col-md-7" 
+		    		name="description" 
+		    		rows="2"
+		    		required
+		    		>{$full_news_data['description']}</textarea>
 		    	<br>
 		    	<p>news full_news</p>
-		    	<textarea class="area_edit_news col-md-7" name="full_news" rows="20">{$full_news_data['full_news']}</textarea>
+		    	<textarea
+		    		class="area_edit_news col-md-7" 
+		    		name="full_news" 
+		    		rows="20"
+		    		required
+		    		>{$full_news_data['full_news']}</textarea>
 		    	<input 
 		    		type="submit" 
 		    		name="form" 
@@ -514,6 +530,18 @@ _FULL_NEWS;
 					value="$user_access">
     		</form>
 _FULL_NEWS_EDIT;
+		
+	}
+#-------------------------------------------------------
+	public function add($user_login, $user_access)
+	{
+		$empty_news_data = array( 
+			'id' => '0',
+			'header' => '',
+			'description' => '',
+			'full_news' => '',
+			'date' => '');	
+		$this->full_news_edit($user_login, $user_access, $empty_news_data);
 	}
 
 #-------------------------------------------------------
