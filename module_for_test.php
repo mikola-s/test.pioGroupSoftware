@@ -5,11 +5,14 @@ session_start();
 $user = new user_class;
 $html_part = new page_elements;
 $news = new news_class;
+$user->login = $_SESSION['login'];
+$user->access = $_SESSION['access'];
+
 
 $html_part->head(); //шапка стриницы
 
 		echo '<pre>';
-		echo 'session<br>';
+		echo 'session up<br>';
 		print_r ($_SESSION);
 		echo 'post<br>';
 		print_r ($_POST);
@@ -18,11 +21,12 @@ $html_part->head(); //шапка стриницы
 
 //главная станица после авторизации
 if (!empty($_SESSION) && isset($_SESSION['login']) && (!empty($_POST))) {
-	$user->login = $_SESSION['login'];
-	$user->access = $_SESSION['access'];
 
 	if (!empty($_POST) && (isset($_POST['form']))) {
-		$html_part->form_login($user->login, TRUE);
+		
+		if (!(($_POST['form'] == 'login') || ($_POST['form'] == 'exit'))) {
+			$html_part->form_login(TRUE);
+		}
 
 
 		switch ($_POST['form']) {
@@ -30,12 +34,12 @@ if (!empty($_SESSION) && isset($_SESSION['login']) && (!empty($_POST))) {
 				$login_from_post = htmlentities($_POST['login']);
 				$password_from_post = htmlentities($_POST['password']);
 				if ($user->autorization($login_from_post, $password_from_post)) {
-					$html_part->form_login($login_from_post, TRUE);
+					$html_part->form_login(TRUE);
 				} 	
 				else {
-					$html_part->form_login($login_from_post, FALSE);
+					$html_part->form_login(FALSE);
 				}
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+	 			$html_part->short_news_list($news->short_news());
 				break;
 			case 'exit':
 				$user->login = 'Guest';
@@ -43,27 +47,27 @@ if (!empty($_SESSION) && isset($_SESSION['login']) && (!empty($_POST))) {
 	//-------------------------------------
 				$user->update_session();
 	//-------------------------------------
-				$html_part->form_login($user->login, TRUE);
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+				$html_part->form_login(TRUE);
+	 			$html_part->short_news_list($news->short_news());
 				break;
 			case 'full_news':
 				$full_news_data = $news->full_news($_POST['news_id']);
-				$html_part->full_news($user->login, $user->access, $full_news_data);
+				$html_part->full_news($full_news_data);
 				break;
 			case 'edit_news':
 				$full_news_data = $news->full_news($_POST['news_id']);
-				$html_part->full_news_edit($user->login, $user->access, $full_news_data);
+				$html_part->full_news_edit($full_news_data);
 				break;
 			case 'save_news':
 				$news->save($_POST);
-	 			$html_part->short_news_list($user->login, $user->access, $news->short_news());
+	 			$html_part->short_news_list($news->short_news());
 				break;
 			case 'cancel':
 				# code...
 				break;
 				
 			case 'add_news':
-				$html_part->add($user->login, $user->access);
+				$html_part->add();
 				break;
 			case 'edit_user':
 				# code...
@@ -83,15 +87,28 @@ if (!empty($_SESSION) && isset($_SESSION['login']) && (!empty($_POST))) {
 				break;
 		}
 	} 
+		echo '<pre>';
+		echo 'session center<br>';
+		print_r ($_SESSION);
+		echo '</pre><br>';
 
+
+} elseif (!empty($_SESSION) && isset($_SESSION['login']) && (empty($_POST))) {
+		$user->update_session();
+		$html_part->form_login(TRUE);
+	 	$html_part->short_news_list($news->short_news());
 
 } elseif (empty($_SESSION) || ($_SESSION['login'] == 'Guest')) {
 		$user->login = 'Guest';
 		$user->access = 'read';
 		$user->update_session();
-		$html_part->head();
-		$html_part->form_login($user->login, TRUE);
-	 	$html_part->short_news_list($user->login, $user->access, $news->short_news());
+		$html_part->form_login(TRUE);
+	 	$html_part->short_news_list($news->short_news());
+	 	
+	 	echo '<pre>';
+		echo 'session down<br>';
+		print_r ($_SESSION);
+		echo '</pre><br>';
 }
 #######################
 			// echo '<pre>';
@@ -137,12 +154,15 @@ class user_class
 
 			if (isset($user_data['password']) &&
 				($user_data['password'] == $pass_md5)) {
-				if (isset($_SESSION)) {
-					$this->login = $user_data['login'];
-					$this->access = $user_data['access'];
-					$this->password = $user_data['password'];
-					$this->update_session(); 
-				}
+				$this->login = $user_data['login'];
+				$this->access = $user_data['access'];
+				$this->password = $user_data['password'];
+				$this->update_session(); 
+				echo '<pre>';
+				echo 'session autorization<br>';
+				print_r ($_SESSION);
+				echo '</pre><br>';
+
 				return TRUE;
 			} else {
 				return FALSE;
@@ -164,7 +184,7 @@ class user_class
 
 
 	//добавить пользователя 
-	public function add($user_login, $user_access){
+	public function add(){
 
 	}
 
@@ -308,8 +328,9 @@ _HTML_head;
 	}
 
 #-------------------------------------------------------
-	public function form_login($user_name, $autorization)
+	public function form_login($autorization)
 	{
+		$user_name = $_SESSION['login'];
 		if (($user_name == 'Guest') && ($autorization == TRUE)) {
 			
 			echo <<<_FORM_LOGIN
@@ -359,15 +380,11 @@ _FORM_EXIT;
 		    			type="password" 
 		    			name="password" 
 		    			placeholder="enter your password">
+
 			    	<button 
 			    		type="submit"
 					    name="form"  
 					    value="login">Login</button>
-		    		<input 
-						type="hidden" 
-						form="form_{$news_data['id']}" 
-						name="access" 
-						value="$user_access">
 			    </form>
 		    </div>
 _FORM_LOGIN_FALSE;
@@ -376,23 +393,23 @@ _FORM_LOGIN_FALSE;
 
 #-------------------------------------------------------
 	//лента коротких новостей
-	public function short_news_list($user_login, $user_access, $news_data)
+	public function short_news_list($news_data)
 	{
-		
 		echo '<div name="short_news_list" 
 			class="col-md-6 short_news_list">';
+		$user_access = $_SESSION['access'];
 		if ($user_access == 'full') {
-			$this->button_add_news($user_login, $user_access);
+			$this->button_add_news();
 		}
 		foreach ($news_data as $query_row_num => $query_row){
-			$this->short_news($user_login, $user_access, $query_row);
+			$this->short_news($query_row);
 		}
 		echo '</div>';
 	}
 
 #-------------------------------------------------------
 	//короткая новость
-	public function short_news($user_login, $user_access, $news_data)
+	public function short_news($news_data)
 	{
 		echo <<<_SHORT_NEWS
 		<div class="short_news_block" 
@@ -408,8 +425,9 @@ _FORM_LOGIN_FALSE;
 		</form>
 _SHORT_NEWS;
 
+		$user_access = $_SESSION['access'];
 		if ($user_access == 'full') {
-	      	$this->buttons_edit_delete($user_login, $user_access, $news_data);
+	      	$this->buttons_edit_delete($news_data);
 		}
 
 		echo <<<_SHORT_NEWS_2
@@ -419,16 +437,7 @@ _SHORT_NEWS;
 			form="form_{$news_data['id']}" 
 			name="form" 
 			value="full_news">
-		<input 
-			type="hidden" 
-			form="form_{$news_data['id']}" 
-			name="login" 
-			value="$user_login">
-		<input 
-			type="hidden" 
-			form="form_{$news_data['id']}" 
-			name="access" 
-			value="$user_access">
+
     	<h4 name="news_header" 
     		class="news_name">{$news_data['header']}</h4>
     	<p class="news_date">{$news_data['date']}</p>
@@ -440,12 +449,13 @@ _SHORT_NEWS_2;
 
 
 #-------------------------------------------------------
-	public function full_news($user_login, $user_access, $full_news_data)
+	public function full_news($full_news_data)
 	{
 		
 		echo '<div name="full_text_news" class="col-md-7 full_text_news">';
+		$user_access = $_SESSION['access'];
 		if ($user_access == 'full') {
-	      	$this->button_news_edit($user_login, $user_access, $full_news_data);
+	      	$this->button_news_edit($full_news_data);
 		}
 		echo <<<_FULL_NEWS
 		    <h4 name="news_header" 
@@ -459,7 +469,7 @@ _FULL_NEWS;
 	}
 
 #-------------------------------------------------------
-	public function full_news_edit($user_login, $user_access, $full_news_data)
+	public function full_news_edit($full_news_data)
 	{
 		echo <<<_FULL_NEWS_EDIT
 		    <form class="col-md-7 full_news_edit" method="post">
@@ -505,14 +515,6 @@ _FULL_NEWS;
 					type="hidden" 
 					name="id" 
 					value="{$full_news_data['id']}">
-		    	<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
     		</form>
 _FULL_NEWS_EDIT;
 ### сюда кнопку отмена 
@@ -520,7 +522,7 @@ _FULL_NEWS_EDIT;
 		
 	}
 #-------------------------------------------------------
-	public function add($user_login, $user_access)
+	public function add()
 	{
 		$empty_news_data = array( 
 			'id' => '0',
@@ -528,21 +530,21 @@ _FULL_NEWS_EDIT;
 			'description' => '',
 			'full_news' => '',
 			'date' => '');	
-		$this->full_news_edit($user_login, $user_access, $empty_news_data);
+		$this->full_news_edit($empty_news_data);
 	}
 
 #-------------------------------------------------------
-	public function buttons_edit_delete($user_login, $user_access, $news_data)
+	public function buttons_edit_delete($news_data)
 	{
 		echo '<div class="buttons_edit_delete">';
-		$this->button_news_edit($user_login, $user_access, $news_data);
-		$this->button_news_delete($user_login, $user_access, $news_data);
+		$this->button_news_edit($news_data);
+		$this->button_news_delete($news_data);
 		echo "</div>";
 	}
 
 #-------------------------------------------------------
 	//кнопка для редактирования новости
-	public function button_news_edit($user_login, $user_access, $news_data)
+	public function button_news_edit($news_data)
 	{
 			echo <<<_BUTTON_EDIT
 		    <form method="post" class="button_news_edit">
@@ -554,23 +556,14 @@ _FULL_NEWS_EDIT;
 		    	<button 
 				    name="form"  
 				    value="edit_news">Edit</button>
-
-    			<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
-      			</form>
+      		</form>
 _BUTTON_EDIT;
 	}
 
 #####################################
 #-------------------------------------------------------
 	//кнопка для редактирования новости
-	public function button_news_delete($user_login, $user_access, $news_data)
+	public function button_news_delete($news_data)
 	{
 			echo <<<_BUTTON_DELETE
 		    <form method="post" class="button_news_edit">
@@ -582,20 +575,12 @@ _BUTTON_EDIT;
 		    		type="submit"
 				    name="form"  
 				    value="delete_news">delete</button>
-    			<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
       			</form>
 _BUTTON_DELETE;
 	}
 
 #####################################
-public function button_news_cancel($user_login, $user_access, $news_data)
+public function button_news_cancel($news_data)
 	{
 			echo <<<_BUTTON_CANCEL
 		    <form method="post" class="button_news_edit">
@@ -607,20 +592,12 @@ public function button_news_cancel($user_login, $user_access, $news_data)
 		    		type="submit"
 				    name="form"  
     				value="cancel_news">Cencel</button>
-    			<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
       			</form>
 _BUTTON_CANCEL;
 	}
 
 #####################################
-public function button_user_list($user_login, $user_access, $news_data)
+public function button_user_list($news_data)
 	{
 			echo <<<_BUTTON_USER_LIST
 		    <form method="post" class="button_news_edit">
@@ -632,20 +609,12 @@ public function button_user_list($user_login, $user_access, $news_data)
 		    		type="submit"
 				    name="form"  
 				    value="user_list">User list</button>
-    			<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
       			</form>
 _BUTTON_USER_LIST;
 	}
 
 #####################################
-public function button_home($user_login, $user_access, $news_data)
+public function button_home($news_data)
 	{
 			echo <<<_BUTTON_CANCEL_NEWS
 		    <form method="post" class="button_news_edit">
@@ -657,21 +626,13 @@ public function button_home($user_login, $user_access, $news_data)
 		    		type="submit"
 				    name="form"  
 				    value="cancel_news">cancel</button>
-    			<input 
-					type="hidden" 
-					name="login" 
-					value="$user_login">
-				<input 
-					type="hidden" 
-					name="access" 
-					value="$user_access">
       			</form>
 _BUTTON_CANCEL_NEWS;
 	}
 
 
 #-------------------------------------------------------
-	public function button_add_news($user_login, $user_access)
+	public function button_add_news()
 	{
 		echo <<<_BUTTON_ADD_NEWS
 		<form method="post" class="form_button_add_news">
@@ -680,14 +641,6 @@ _BUTTON_CANCEL_NEWS;
 	    		type="submit"
 			    name="form"  
       			value="add_news">add news</button>
-	    	<input 
-				type="hidden" 
-				name="login" 
-				value="$user_login">
-			<input 
-				type="hidden" 
-				name="access" 
-				value="$user_access">      		
       	</form>
 _BUTTON_ADD_NEWS;
 	}
